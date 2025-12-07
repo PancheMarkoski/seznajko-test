@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [apiMessage, setApiMessage] = useState<string>('loading...')
+
+  useEffect(() => {
+    fetch('/api')
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Request failed: ${res.status}`)
+        }
+        const text = await res.text()
+        setApiMessage(text)
+      })
+      .catch((err) => {
+        setApiMessage(`error: ${err.message}`)
+      })
+  }, [])
 
   return (
     <>
@@ -25,6 +40,7 @@ function App() {
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
       </div>
+      <p className="read-the-docs">API says: {apiMessage}</p>
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
